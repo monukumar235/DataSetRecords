@@ -3,6 +3,8 @@ package com.Json.Storage.Project.service;
 import com.Json.Storage.Project.dto.request.DataSetJsonRequest;
 import com.Json.Storage.Project.dto.response.DatasetJsonsResponse;
 import com.Json.Storage.Project.entity.DataSetEntityRecord;
+import com.Json.Storage.Project.exception.DataNotFoundException;
+import com.Json.Storage.Project.exception.InvalidQueryParamException;
 import com.Json.Storage.Project.repository.DataSetRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,10 +42,18 @@ public class DataSetService {
     public Map<String,Object> queryDataSet(String datasetName, String groupedBy, String sortedBy, String order) throws JsonProcessingException {
         List<DataSetEntityRecord> dataSetEntityRecords = dataSetRepository.findByDataSetName(datasetName);
 
+        if(dataSetEntityRecords.isEmpty()){
+            throw new DataNotFoundException(datasetName);
+        }
+
         List<Map<String,Object>> recordMap = new ArrayList<>();
 
         for (DataSetEntityRecord dataSetEntityRecord : dataSetEntityRecords){
             recordMap.add(objectMapper.readValue(dataSetEntityRecord.getDataSets(),Map.class));
+        }
+
+        if(groupedBy!=null && sortedBy!=null){
+            throw new InvalidQueryParamException("cann't use both groupby and sortby at the same time!");
         }
 
         if(groupedBy!=null){
