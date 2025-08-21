@@ -1,0 +1,5 @@
+CREATE TABLE data_records(
+    data_set_id INT PRIMARY KEY,
+    data_set_name varChar(256),
+data_sets json
+);

@@ -46,14 +46,14 @@ public class DataSetService {
             throw new DataNotFoundException(datasetName);
         }
 
+        if(groupedBy!=null && sortedBy!=null){
+            throw new InvalidQueryParamException("cann't use both groupby and sortby at the same time!");
+        }
+
         List<Map<String,Object>> recordMap = new ArrayList<>();
 
         for (DataSetEntityRecord dataSetEntityRecord : dataSetEntityRecords){
             recordMap.add(objectMapper.readValue(dataSetEntityRecord.getDataSets(),Map.class));
-        }
-
-        if(groupedBy!=null && sortedBy!=null){
-            throw new InvalidQueryParamException("cann't use both groupby and sortby at the same time!");
         }
 
         if(groupedBy!=null){
